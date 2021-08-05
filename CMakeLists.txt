@@ -1,0 +1,54 @@
+cmake_minimum_required(VERSION 3.16)
+set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
+
+project(olympia CXX)
+
+if (NOT SPARTA_BASE)
+  message (FATAL_ERROR "Need to define the location of the Sparta: cmake <args> -DSPARTA_BASE=\"/path/to/sparta\"")
+endif ()
+include (${SPARTA_BASE}/cmake/sparta-config.cmake)
+
+add_executable(olympia
+  core/Core.cpp
+  core/Fetch.cpp
+  core/Decode.cpp
+  core/Rename.cpp
+  core/Dispatch.cpp
+  core/Execute.cpp
+  core/RISCVInst.cpp
+  core/ROB.cpp
+  core/LSU.cpp
+  core/Preloader.cpp
+  core/CPU.cpp
+  core/CPUFactory.cpp
+  core/CPUTopology.cpp
+  mss/BIU.cpp
+  mss/MSS.cpp
+  sim/OlympiaSim.cpp
+  sim/main.cpp
+  )
+
+add_compile_options ( -Werror
+  -Wall -Wextra -Winline -Winit-self -Wno-unused-function
+  -Wuninitialized -Wno-sequence-point -Wno-inline -Wno-unknown-pragmas
+  -Woverloaded-virtual -Wno-unused-parameter -Wint-conversion -Wno-missing-field-initializers -pipe)
+
+if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
+  set(BUILD_TYPE "release")
+elseif (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
+  set(BUILD_TYPE "debug")
+else()
+  message (FATAL_ERROR "Please provide a CMAKE_BUILD_TYPE: -DCMAKE_BUILD_TYPE=Release|Debug")
+endif()
+
+include_directories (core mss)
+include_directories (SYSTEM ${SPARTA_BASE})
+include_directories (SYSTEM ${SPARTA_BASE}/simdb/include)
+
+target_link_directories (olympia PUBLIC
+  ${SPARTA_BASE}/${BUILD_TYPE}
+  ${SPARTA_BASE}/${BUILD_TYPE}/simdb
+  )
+
+target_link_libraries (olympia ${Sparta_LIBS})
