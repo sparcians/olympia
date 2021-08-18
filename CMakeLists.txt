@@ -32,7 +32,7 @@ add_executable(olympia
 add_compile_options ( -Werror
   -Wall -Wextra -Winline -Winit-self -Wno-unused-function
   -Wuninitialized -Wno-sequence-point -Wno-inline -Wno-unknown-pragmas
-  -Woverloaded-virtual -Wno-unused-parameter -Wint-conversion -Wno-missing-field-initializers -pipe)
+  -Woverloaded-virtual -Wno-unused-parameter -Wno-missing-field-initializers -pipe)
 
 if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
   set(BUILD_TYPE "release")
