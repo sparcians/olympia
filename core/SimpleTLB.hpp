@@ -7,7 +7,7 @@
 #include "cache/SimpleCache2.hpp"
 #include "cache/ReplacementIF.hpp"
 
-namespace core_example
+namespace olympia_core
 {
     class SimpleTLBEntry : public sparta::cache::BasicCacheItem
     {
@@ -122,5 +122,5 @@ namespace core_example
         sparta::Counter hits;
     }; // class SimpleTLB
 
-} // namespace core_example
+} // namespace olympia_core
 

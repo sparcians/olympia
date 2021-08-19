@@ -6,7 +6,7 @@
 #include "Decode.hpp"
 #include "sparta/events/StartupEvent.hpp"
 
-namespace core_example
+namespace olympia_core
 {
     constexpr char Decode::name[];
 

@@ -9,6 +9,13 @@ if (NOT SPARTA_BASE)
 endif ()
 include (${SPARTA_BASE}/cmake/sparta-config.cmake)
 
+# Use ccache if we've got it.
+find_program (CCACHE_PROGRAM ccache)
+if (CCACHE_PROGRAM)
+  set_property (GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+  message ("-- Using ccache")
+endif ()
+
 add_executable(olympia
   core/Core.cpp
   core/Fetch.cpp

@@ -7,7 +7,7 @@
 #include "sparta/resources/Queue.hpp"
 #include "RISCVInst.hpp"
 
-namespace core_example
+namespace olympia_core
 {
 
     //! Instruction Queue

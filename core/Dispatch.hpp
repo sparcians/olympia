@@ -21,7 +21,7 @@
 #include "CoreTypes.hpp"
 #include "FlushManager.hpp"
 
-namespace core_example
+namespace olympia_core
 {
 
     /**

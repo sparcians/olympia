@@ -19,7 +19,7 @@
 #include "sparta/ports/SyncPort.hpp"
 #include "sparta/resources/Pipe.hpp"
 
-namespace core_example
+namespace olympia_mss
 {
     class BIU : public sparta::Unit
     {
@@ -55,7 +55,7 @@ namespace core_example
         // Input Ports
         ////////////////////////////////////////////////////////////////////////////////
 
-        sparta::DataInPort<InstQueue::value_type> in_biu_req_
+        sparta::DataInPort<olympia_core::InstQueue::value_type> in_biu_req_
             {&unit_port_set_, "in_biu_req", 1};
 
         sparta::SyncInPort<bool> in_mss_ack_sync_
@@ -66,10 +66,10 @@ namespace core_example
         // Output Ports
         ////////////////////////////////////////////////////////////////////////////////
 
-        sparta::DataOutPort<RISCVInstPtr> out_biu_ack_
+        sparta::DataOutPort<olympia_core::RISCVInstPtr> out_biu_ack_
             {&unit_port_set_, "out_biu_ack"};
 
-        sparta::SyncOutPort<RISCVInstPtr> out_mss_req_sync_
+        sparta::SyncOutPort<olympia_core::RISCVInstPtr> out_mss_req_sync_
             {&unit_port_set_, "out_mss_req_sync", getClock()};
 
 
@@ -77,7 +77,7 @@ namespace core_example
         // Internal States
         ////////////////////////////////////////////////////////////////////////////////
 
-        using BusRequestQueue = std::list<RISCVInstPtr>;
+        using BusRequestQueue = std::list<olympia_core::RISCVInstPtr>;
         BusRequestQueue biu_req_queue_;
 
         const uint32_t biu_req_queue_size_;
@@ -104,7 +104,7 @@ namespace core_example
         ////////////////////////////////////////////////////////////////////////////////
 
         // Receive new BIU request from LSU
-        void getReqFromLSU_(const RISCVInstPtr &);
+        void getReqFromLSU_(const olympia_core::RISCVInstPtr &);
 
         // Handle BIU request
         void handle_BIU_Req_();
@@ -122,9 +122,8 @@ namespace core_example
         ////////////////////////////////////////////////////////////////////////////////
 
         // Append BIU request queue
-        void appendReqQueue_(const RISCVInstPtr &);
+        void appendReqQueue_(const olympia_core::RISCVInstPtr &);
 
 
     };
 }
-

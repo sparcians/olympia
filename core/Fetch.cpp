@@ -10,7 +10,7 @@
 
 #include "sparta/events/StartupEvent.hpp"
 
-namespace core_example
+namespace olympia_core
 {
     const char * Fetch::name = "fetch";
 

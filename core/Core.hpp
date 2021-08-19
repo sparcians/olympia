@@ -9,7 +9,7 @@
 #include "sparta/functional/RegisterSet.hpp"
 #include "sparta/simulation/ParameterSet.hpp"
 
-namespace core_example
+namespace olympia_core
 {
     // In Olympia the Core class is just a placeholder and a
     // full-blown unit.  In reality, it can just be a simple
@@ -29,7 +29,7 @@ namespace core_example
         };
 
         //! \brief Name of this resource. Required by sparta::UnitFactory
-        static constexpr char name[] = "core_example_core";
+        static constexpr char name[] = "olympia_core_core";
 
         /*!
          * \brief Core constructor

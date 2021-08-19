@@ -5,7 +5,7 @@
 #include "sparta/app/Simulation.hpp"
 #include "sparta/trigger/ExpiringExpressionTrigger.hpp"
 
-namespace core_example{ class CPUFactory; }
+namespace olympia_core{ class CPUFactory; }
 
 /*!
  * \brief OlympiaSim which builds the model and configures it
@@ -48,7 +48,8 @@ private:
     //! to bind things together.
     void bindTree_() override;
 
-    //! This method is used to support command line options like --report-warmup-icount
+    //! This method is used to support command line options like
+    //! --report-warmup-icount and -i
     const sparta::CounterBase* findSemanticCounter_(CounterSemantic sem) const override;
 
     //////////////////////////////////////////////////////////////////////
@@ -66,7 +67,7 @@ private:
     /*!
      * \brief Get the factory for topology build
      */
-    auto getCPUFactory_() -> core_example::CPUFactory*;
+    auto getCPUFactory_() -> olympia_core::CPUFactory*;
 
     /*!
      * \brief Optional flag to print registered factories to console

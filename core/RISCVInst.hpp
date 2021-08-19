@@ -14,7 +14,7 @@
 #include <ostream>
 #include <map>
 
-namespace core_example
+namespace olympia_core
 {
     /*!
     * \class RISCVInst
@@ -93,13 +93,13 @@ namespace core_example
         }
 
         bool getCompletedStatus() const {
-            return getStatus() == core_example::RISCVInst::Status::COMPLETED;
+            return getStatus() == olympia_core::RISCVInst::Status::COMPLETED;
         }
 
         void setStatus(Status status) {
             status_state_.setValue(status);
             status_.write(status);
-            if(getStatus() == core_example::RISCVInst::Status::COMPLETED) {
+            if(getStatus() == olympia_core::RISCVInst::Status::COMPLETED) {
                 if(ev_retire_ != 0) {
                     ev_retire_->schedule();
                 }
@@ -114,7 +114,7 @@ namespace core_example
             ev_retire_ = rob_retire_event;
             is_last_ = last;
 
-            if(status_.isValidNS() && status_.readNS() == core_example::RISCVInst::Status::COMPLETED) {
+            if(status_.isValidNS() && status_.readNS() == olympia_core::RISCVInst::Status::COMPLETED) {
                 ev_retire_->schedule();
             }
         }

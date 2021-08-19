@@ -18,7 +18,7 @@
 
 #include "CoreTypes.hpp"
 
-namespace core_example
+namespace olympia_core
 {
     /**
      * @file   Fetch.h

@@ -9,7 +9,7 @@
 #include "sparta/simulation/TreeNode.hpp"
 #include "sparta/simulation/ParameterSet.hpp"
 
-namespace core_example{
+namespace olympia_core{
 
 /**
  * @file  CPU.h
@@ -66,4 +66,4 @@ private:
     double frequency_ghz_;
     std::string vpclass_;
 }; // class CPU
-}  // namespace core_example
+}  // namespace olympia_core

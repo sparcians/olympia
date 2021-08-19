@@ -8,7 +8,7 @@
 
 #include "cache/preload/PreloaderIF.hpp"
 
-namespace core_example
+namespace olympia_core
 {
     /**
      * \class Preloader

@@ -5,7 +5,7 @@
 #include "ROB.hpp"
 #include "sparta/events/StartupEvent.hpp"
 
-namespace core_example
+namespace olympia_core
 {
     const char ROB::name[] = "rob";
 

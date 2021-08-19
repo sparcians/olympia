@@ -26,7 +26,7 @@
 #include "CoreTypes.hpp"
 #include "FlushManager.hpp"
 
-namespace core_example
+namespace olympia_core
 {
     /**
      * @class Execute
@@ -118,5 +118,5 @@ namespace core_example
         // Used to flush the ALU
         void flushInst_(const FlushManager::FlushingCriteria & criteria);
     };
-} // namespace core_example
+} // namespace olympia_core
 

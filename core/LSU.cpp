@@ -2,7 +2,7 @@
 #include "sparta/utils/SpartaAssert.hpp"
 #include "LSU.hpp"
 
-namespace core_example
+namespace olympia_core
 {
     const char LSU::name[] = "lsu";
 
@@ -997,4 +997,4 @@ namespace core_example
         }
     }
 
-} // namespace core_example
+} // namespace olympia_core

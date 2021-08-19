@@ -15,7 +15,7 @@
 #include "sparta/simulation/Unit.hpp"
 #include "sparta/ports/DataPort.hpp"
 
-namespace core_example
+namespace olympia_core
 {
     /**
      * \class FlushManager

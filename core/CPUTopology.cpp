@@ -6,7 +6,7 @@
 /**
  * @brief Constructor for CPUTopology_1
  */
-core_example::CoreTopology_1::CoreTopology_1(){
+olympia_core::CoreTopology_1::CoreTopology_1(){
 
     //! Instantiating units of this topology
     units = {
@@ -285,10 +285,10 @@ core_example::CoreTopology_1::CoreTopology_1(){
 /**
  * @brief Static method to allocate memory for topology
  */
-auto core_example::CPUTopology::allocateTopology(const std::string& topology) -> core_example::CPUTopology*{
+auto olympia_core::CPUTopology::allocateTopology(const std::string& topology) -> olympia_core::CPUTopology*{
     CPUTopology* new_topology {nullptr};
     if(topology == "core_topology_1"){
-        new_topology = new core_example::CoreTopology_1();
+        new_topology = new olympia_core::CoreTopology_1();
     }
     else{
         throw sparta::SpartaException("This topology in unrecognized.");

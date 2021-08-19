@@ -24,7 +24,7 @@
 #include "SimpleTLB.hpp"
 #include "SimpleDL1.hpp"
 
-namespace core_example
+namespace olympia_core
 {
     class LSU : public sparta::Unit
     {
@@ -526,7 +526,7 @@ namespace core_example
     };
 
     inline std::ostream & operator<<(std::ostream & os,
-        const core_example::LSU::MemoryAccessInfo::MMUState & mmu_access_state){
+        const olympia_core::LSU::MemoryAccessInfo::MMUState & mmu_access_state){
         switch(mmu_access_state){
             case LSU::MemoryAccessInfo::MMUState::NO_ACCESS:
                 os << "no_access";
@@ -544,7 +544,7 @@ namespace core_example
     }
 
     inline std::ostream & operator<<(std::ostream & os,
-        const core_example::LSU::MemoryAccessInfo::CacheState & cache_access_state){
+        const olympia_core::LSU::MemoryAccessInfo::CacheState & cache_access_state){
         switch(cache_access_state){
             case LSU::MemoryAccessInfo::CacheState::NO_ACCESS:
                 os << "no_access";
@@ -562,7 +562,7 @@ namespace core_example
     }
 
     inline std::ostream& operator<<(std::ostream& os,
-        const core_example::LSU::LoadStoreInstInfo::IssuePriority& rank){
+        const olympia_core::LSU::LoadStoreInstInfo::IssuePriority& rank){
         switch(rank){
             case LSU::LoadStoreInstInfo::IssuePriority::HIGHEST:
                 os << "(highest)";
@@ -592,7 +592,7 @@ namespace core_example
     }
 
     inline std::ostream& operator<<(std::ostream& os,
-        const core_example::LSU::LoadStoreInstInfo::IssueState& state){
+        const olympia_core::LSU::LoadStoreInstInfo::IssueState& state){
         // Print instruction issue state
         switch(state){
             case LSU::LoadStoreInstInfo::IssueState::READY:
@@ -609,4 +609,4 @@ namespace core_example
         }
         return os;
     }
-} // namespace core_example
+} // namespace olympia_core

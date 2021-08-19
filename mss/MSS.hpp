@@ -17,7 +17,7 @@
 #include "CoreTypes.hpp"
 #include "FlushManager.hpp"
 
-namespace core_example
+namespace olympia_mss
 {
     class MSS : public sparta::Unit
     {
@@ -52,7 +52,7 @@ namespace core_example
         // Input Ports
         ////////////////////////////////////////////////////////////////////////////////
 
-        sparta::SyncInPort<RISCVInstPtr> in_mss_req_sync_
+        sparta::SyncInPort<olympia_core::RISCVInstPtr> in_mss_req_sync_
             {&unit_port_set_, "in_mss_req_sync", getClock()};
 
 
@@ -85,7 +85,7 @@ namespace core_example
         ////////////////////////////////////////////////////////////////////////////////
 
         // Receive new MSS request from BIU
-        void getReqFromBIU_(const RISCVInstPtr &);
+        void getReqFromBIU_(const olympia_core::RISCVInstPtr &);
 
         // Handle MSS request
         void handle_MSS_req_();
@@ -98,4 +98,3 @@ namespace core_example
 
     };
 }
-

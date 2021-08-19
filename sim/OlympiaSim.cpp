@@ -30,14 +30,14 @@ OlympiaSim::OlympiaSim(const std::string& topology,
                        uint32_t num_cores,
                        uint64_t instruction_limit,
                        bool show_factories) :
-    sparta::app::Simulation("sparta_core_example", &scheduler),
+    sparta::app::Simulation("sparta_olympia_core", &scheduler),
     cpu_topology_(topology),
     num_cores_(num_cores),
     instruction_limit_(instruction_limit),
     show_factories_(show_factories)
 {
     // Set up the CPU Resource Factory to be available through ResourceTreeNode
-    getResourceSet()->addResourceFactory<core_example::CPUFactory>();
+    getResourceSet()->addResourceFactory<olympia_core::CPUFactory>();
 }
 
 OlympiaSim::~OlympiaSim()
@@ -46,9 +46,9 @@ OlympiaSim::~OlympiaSim()
 }
 
 //! Get the resource factory needed to build and bind the tree
-auto OlympiaSim::getCPUFactory_() -> core_example::CPUFactory*{
+auto OlympiaSim::getCPUFactory_() -> olympia_core::CPUFactory*{
     auto sparta_res_factory = getResourceSet()->getResourceFactory("cpu");
-    auto cpu_factory = dynamic_cast<core_example::CPUFactory*>(sparta_res_factory);
+    auto cpu_factory = dynamic_cast<olympia_core::CPUFactory*>(sparta_res_factory);
     return cpu_factory;
 }
 

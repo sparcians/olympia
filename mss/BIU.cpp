@@ -3,7 +3,7 @@
 #include "sparta/utils/SpartaAssert.hpp"
 #include "BIU.hpp"
 
-namespace core_example
+namespace olympia_mss
 {
     const char BIU::name[] = "biu";
 
@@ -17,7 +17,7 @@ namespace core_example
         biu_latency_(p->biu_latency)
     {
         in_biu_req_.registerConsumerHandler
-            (CREATE_SPARTA_HANDLER_WITH_DATA(BIU, getReqFromLSU_, RISCVInstPtr));
+            (CREATE_SPARTA_HANDLER_WITH_DATA(BIU, getReqFromLSU_, olympia_core::RISCVInstPtr));
 
         in_mss_ack_sync_.registerConsumerHandler
             (CREATE_SPARTA_HANDLER_WITH_DATA(BIU, getAckFromMSS_, bool));
@@ -35,7 +35,7 @@ namespace core_example
     ////////////////////////////////////////////////////////////////////////////////
 
     // Receive new BIU request from LSU
-    void BIU::getReqFromLSU_(const RISCVInstPtr & inst_ptr)
+    void BIU::getReqFromLSU_(const olympia_core::RISCVInstPtr & inst_ptr)
     {
         appendReqQueue_(inst_ptr);
 
@@ -111,7 +111,7 @@ namespace core_example
     ////////////////////////////////////////////////////////////////////////////////
 
     // Append BIU request queue
-    void BIU::appendReqQueue_(const RISCVInstPtr& inst_ptr)
+    void BIU::appendReqQueue_(const olympia_core::RISCVInstPtr& inst_ptr)
     {
         sparta_assert(biu_req_queue_.size() <= biu_req_queue_size_ ,"BIU request queue overflows!");
 

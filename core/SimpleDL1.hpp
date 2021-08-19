@@ -10,7 +10,7 @@
 #include "cache/preload/PreloadableNode.hpp"
 
 using namespace std::placeholders;
-namespace core_example
+namespace olympia_core
 {
     class SimpleCacheLine : public sparta::cache::BasicCacheItem
     {
@@ -163,5 +163,5 @@ namespace core_example
 
     }; // class SimpleDL1
 
-} // namespace core_example
+} // namespace olympia_core
 
