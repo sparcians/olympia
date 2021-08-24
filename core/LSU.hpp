@@ -192,7 +192,7 @@ namespace olympia_core
         };  // class MemoryAccessInfo
 
         // allocator for this object type
-        sparta::SpartaSharedPointer<MemoryAccessInfo>::SpartaSharedPointerAllocator memory_access_allocator;
+        sparta::SpartaSharedPointerAllocator<MemoryAccessInfo> memory_access_allocator;
 
         /*!
         * \class MemoryAccessInfoPairDef
@@ -309,7 +309,7 @@ namespace olympia_core
 
         };  // class LoadStoreInstInfo
 
-        sparta::SpartaSharedPointer<LoadStoreInstInfo>::SpartaSharedPointerAllocator load_store_info_allocator;
+        sparta::SpartaSharedPointerAllocator<LoadStoreInstInfo> load_store_info_allocator;
 
         /*!
         * \class LoadStoreInstInfoPairDef

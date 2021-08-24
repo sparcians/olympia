@@ -42,23 +42,33 @@ add_compile_options ( -Werror
   -Woverloaded-virtual -Wno-unused-parameter -Wno-missing-field-initializers -pipe)
 
 if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
-  set(BUILD_TYPE "release")
+  set(SPARTA_BUILD_TYPE "release")
 elseif (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
-  set(BUILD_TYPE "debug")
+  set(SPARTA_BUILD_TYPE "debug")
+elseif (CMAKE_BUILD_TYPE MATCHES "^[Pp]rofile")
+  set(SPARTA_BUILD_TYPE "release")
 else()
-  message (FATAL_ERROR "Please provide a CMAKE_BUILD_TYPE: -DCMAKE_BUILD_TYPE=Release|Debug")
+  message (FATAL_ERROR "Please provide a CMAKE_BUILD_TYPE: -DCMAKE_BUILD_TYPE=Release|Debug|Profile")
 endif()
 
+# Profile build flags
+set(CMAKE_CXX_FLAGS_PROFILE "-O3 -pg -g")
+
+# Include directories
 include_directories (core mss)
 include_directories (SYSTEM ${SPARTA_BASE})
 include_directories (SYSTEM ${SPARTA_BASE}/simdb/include)
 
+# Sparta linking
 target_link_directories (olympia PUBLIC
-  ${SPARTA_BASE}/${BUILD_TYPE}
-  ${SPARTA_BASE}/${BUILD_TYPE}/simdb
+  ${SPARTA_BASE}/${SPARTA_BUILD_TYPE}
+  ${SPARTA_BASE}/${SPARTA_BUILD_TYPE}/simdb
   )
-
 target_link_libraries (olympia ${Sparta_LIBS})
+
+# Create a few links like reports and arch directories
+file(CREATE_LINK ${PROJECT_SOURCE_DIR}/reports ${CMAKE_CURRENT_BINARY_DIR}/reports SYMBOLIC)
+file(CREATE_LINK ${PROJECT_SOURCE_DIR}/archs   ${CMAKE_CURRENT_BINARY_DIR}/archs SYMBOLIC)
 
 # Add testing, but do not build as part of the 'all' target
 add_subdirectory (test EXCLUDE_FROM_ALL)
