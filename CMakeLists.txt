@@ -59,3 +59,6 @@ target_link_directories (olympia PUBLIC
   )
 
 target_link_libraries (olympia ${Sparta_LIBS})
+
+# Add testing, but do not build as part of the 'all' target
+add_subdirectory (test EXCLUDE_FROM_ALL)
