@@ -57,17 +57,18 @@ namespace olympia_core
         sparta::DataInPort<InstGroup>   in_uop_queue_append_       {&unit_port_set_, "in_uop_queue_append", 1};
         sparta::DataOutPort<uint32_t>   out_uop_queue_credits_     {&unit_port_set_, "out_uop_queue_credits"};
         sparta::DataOutPort<InstGroup>  out_dispatch_queue_write_  {&unit_port_set_, "out_dispatch_queue_write"};
-        sparta::DataInPort<uint32_t>    in_dispatch_queue_credits_ {&unit_port_set_, "in_dispatch_queue_credits", sparta::SchedulingPhase::Tick, 0};
+        sparta::DataInPort<uint32_t>    in_dispatch_queue_credits_ {&unit_port_set_, "in_dispatch_queue_credits",
+                                                                    sparta::SchedulingPhase::Tick, 0};
 
         // For flush
         sparta::DataInPort<FlushManager::FlushingCriteria> in_reorder_flush_
              {&unit_port_set_, "in_reorder_flush", sparta::SchedulingPhase::Flush, 1};
 
-        sparta::UniqueEvent<> ev_rename_insts_ {&unit_event_set_, "rename_insts", CREATE_SPARTA_HANDLER(Rename, renameInstructions_)};
+        sparta::UniqueEvent<> ev_rename_insts_ {&unit_event_set_, "rename_insts",
+                                                CREATE_SPARTA_HANDLER(Rename, renameInstructions_)};
 
         const uint32_t num_to_rename_per_cycle_;
         uint32_t credits_dispatch_ = 0;
-        bool stop_checking_db_access_ = false;
 
         //! Send initial credits
         void sendInitialCredits_();

@@ -52,7 +52,7 @@ else()
 endif()
 
 # Profile build flags
-set(CMAKE_CXX_FLAGS_PROFILE "-O3 -pg -g")
+set(CMAKE_CXX_FLAGS_PROFILE "-O3 -pg -g -ftime-trace")
 
 # Include directories
 include_directories (core mss)
