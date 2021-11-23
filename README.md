@@ -1,5 +1,5 @@
 # olympia
-A RISC-V CPU Trace-Drirven Performance Model based on the Sparta Modeling Framework.
+aA RISC-V CPU Trace-Drirven Performance Model based on the Sparta Modeling Framework.
 
 # Build Directions
 
