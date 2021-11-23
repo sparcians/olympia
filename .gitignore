@@ -35,3 +35,6 @@
 [Rr]elease
 [Dd]ebug
 [Pp]rofile
+
+# Backup files
+*~

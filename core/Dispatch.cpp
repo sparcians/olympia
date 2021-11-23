@@ -176,20 +176,20 @@ namespace olympia_core
         for(uint32_t i = 0; (i < num_dispatch) && keep_dispatching; ++i)
         {
             bool dispatched = false;
-            RISCVInstPtr & ex_inst_ptr = dispatch_queue_.access(0);
-            RISCVInst & ex_inst = *ex_inst_ptr;
+            InstPtr & ex_inst_ptr = dispatch_queue_.access(0);
+            Inst & ex_inst = *ex_inst_ptr;
 
             switch(ex_inst.getUnit())
             {
-            case RISCVInst::TargetUnit::FPU:
+            case Inst::TargetUnit::FPU:
                 {
                     if(credits_fpu_ > 0) {
                         --credits_fpu_;
                         dispatched = true;
                         out_fpu_write_.send(ex_inst_ptr);
-                        ++unit_distribution_[static_cast<uint32_t>(RISCVInst::TargetUnit::FPU)];
-                        ++(unit_distribution_context_.context(static_cast<uint32_t>(RISCVInst::TargetUnit::FPU)));
-                        ++(weighted_unit_distribution_context_.context(static_cast<uint32_t>(RISCVInst::TargetUnit::FPU)));
+                        ++unit_distribution_[static_cast<uint32_t>(Inst::TargetUnit::FPU)];
+                        ++(unit_distribution_context_.context(static_cast<uint32_t>(Inst::TargetUnit::FPU)));
+                        ++(weighted_unit_distribution_context_.context(static_cast<uint32_t>(Inst::TargetUnit::FPU)));
 
                         if(SPARTA_EXPECT_FALSE(info_logger_)) {
                             info_logger_ << "Sending instruction: "
@@ -202,16 +202,16 @@ namespace olympia_core
                     }
                 }
                 break;
-            case RISCVInst::TargetUnit::ALU0:
+            case Inst::TargetUnit::ALU0:
                 {
                     if(credits_alu0_ > 0) {
                         --credits_alu0_;
                         dispatched = true;
                         //out_alu0_write_.send(ex_inst_ptr);  // <- This will cause an assert in the Port!
                         out_alu0_write_.send(ex_inst_ptr, 1);
-                        ++unit_distribution_[static_cast<uint32_t>(RISCVInst::TargetUnit::ALU0)];
-                        ++(unit_distribution_context_.context(static_cast<uint32_t>(RISCVInst::TargetUnit::ALU0)));
-                        ++(weighted_unit_distribution_context_.context(static_cast<uint32_t>(RISCVInst::TargetUnit::ALU0)));
+                        ++unit_distribution_[static_cast<uint32_t>(Inst::TargetUnit::ALU0)];
+                        ++(unit_distribution_context_.context(static_cast<uint32_t>(Inst::TargetUnit::ALU0)));
+                        ++(weighted_unit_distribution_context_.context(static_cast<uint32_t>(Inst::TargetUnit::ALU0)));
                         ++(alu0_context_.context(0));
 
                         if(SPARTA_EXPECT_FALSE(info_logger_)) {
@@ -225,16 +225,16 @@ namespace olympia_core
                     }
                 }
                 break;
-            case RISCVInst::TargetUnit::ALU1:
+            case Inst::TargetUnit::ALU1:
                 {
                     if(credits_alu1_ > 0)
                     {
                         --credits_alu1_;
                         dispatched = true;
                         out_alu1_write_.send(ex_inst_ptr, 1);
-                        ++unit_distribution_[static_cast<uint32_t>(RISCVInst::TargetUnit::ALU1)];
-                        ++(unit_distribution_context_.context(static_cast<uint32_t>(RISCVInst::TargetUnit::ALU1)));
-                        ++(weighted_unit_distribution_context_.context(static_cast<uint32_t>(RISCVInst::TargetUnit::ALU1)));
+                        ++unit_distribution_[static_cast<uint32_t>(Inst::TargetUnit::ALU1)];
+                        ++(unit_distribution_context_.context(static_cast<uint32_t>(Inst::TargetUnit::ALU1)));
+                        ++(weighted_unit_distribution_context_.context(static_cast<uint32_t>(Inst::TargetUnit::ALU1)));
 
                         if(SPARTA_EXPECT_FALSE(info_logger_)) {
                             info_logger_ << "Sending instruction: "
@@ -247,16 +247,16 @@ namespace olympia_core
                     }
                 }
                 break;
-             case RISCVInst::TargetUnit::BR:
+             case Inst::TargetUnit::BR:
                 {
                     if(credits_br_ > 0)
                     {
                         --credits_br_;
                         dispatched = true;
                         out_br_write_.send(ex_inst_ptr, 1);
-                        ++unit_distribution_[static_cast<uint32_t>(RISCVInst::TargetUnit::BR)];
-                        ++(unit_distribution_context_.context(static_cast<uint32_t>(RISCVInst::TargetUnit::BR)));
-                        ++(weighted_unit_distribution_context_.context(static_cast<uint32_t>(RISCVInst::TargetUnit::BR)));
+                        ++unit_distribution_[static_cast<uint32_t>(Inst::TargetUnit::BR)];
+                        ++(unit_distribution_context_.context(static_cast<uint32_t>(Inst::TargetUnit::BR)));
+                        ++(weighted_unit_distribution_context_.context(static_cast<uint32_t>(Inst::TargetUnit::BR)));
 
                         if(SPARTA_EXPECT_FALSE(info_logger_)) {
                             info_logger_ << "Sending instruction: "
@@ -269,16 +269,16 @@ namespace olympia_core
                     }
                 }
                 break;
-             case RISCVInst::TargetUnit::LSU:
+             case Inst::TargetUnit::LSU:
                 {
                     if(credits_lsu_ > 0)
                     {
                         --credits_lsu_;
                         dispatched = true;
                         out_lsu_write_.send(ex_inst_ptr, 1);
-                        ++unit_distribution_[static_cast<uint32_t>(RISCVInst::TargetUnit::LSU)];
-                        ++(unit_distribution_context_.context(static_cast<uint32_t>(RISCVInst::TargetUnit::LSU)));
-                        ++(weighted_unit_distribution_context_.context(static_cast<uint32_t>(RISCVInst::TargetUnit::LSU)));
+                        ++unit_distribution_[static_cast<uint32_t>(Inst::TargetUnit::LSU)];
+                        ++(unit_distribution_context_.context(static_cast<uint32_t>(Inst::TargetUnit::LSU)));
+                        ++(weighted_unit_distribution_context_.context(static_cast<uint32_t>(Inst::TargetUnit::LSU)));
 
                         if(SPARTA_EXPECT_FALSE(info_logger_)) {
                             info_logger_ << "sending instruction: "
@@ -291,9 +291,9 @@ namespace olympia_core
                     }
                 }
                 break;
-             case RISCVInst::TargetUnit::ROB:
+             case Inst::TargetUnit::ROB:
                 {
-                    ex_inst.setStatus(RISCVInst::Status::COMPLETED);
+                    ex_inst.setStatus(Inst::Status::COMPLETED);
                     // Indicate that this instruction was dispatched
                     // -- it goes right to the ROB
                     dispatched = true;

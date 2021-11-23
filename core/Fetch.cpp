@@ -15,37 +15,37 @@ namespace olympia_core
     const char * Fetch::name = "fetch";
 
     // Dummy opcodes, but based on a really small piece of PowerPC...
-    static std::vector<RISCVInst::StaticInfo> dummy_opcodes =
+    static std::vector<Inst::StaticInfo> dummy_opcodes =
     {
-        { {0x7c01f214, 0xffffffff, {}, "add.", 0 }, RISCVInst::TargetUnit::ALU0, 1, false},
-        { {0x7c6f0f10, 0xffffffff, {}, "cntlzw", 0 }, RISCVInst::TargetUnit::ALU1, 1, false},
-        { {0x7c800000, 0xffffffff, {}, "add", 0 }, RISCVInst::TargetUnit::ALU0, 1, false},
-        { {0x7c700000, 0xffffffff, {}, "subf.", 0 }, RISCVInst::TargetUnit::ALU1, 1, false},
-        { {0x7c000000, 0xffffffff, {}, "and", 0 }, RISCVInst::TargetUnit::ALU0, 1, false},
-        { {0x7c000000, 0xffffffff, {}, "and", 0 }, RISCVInst::TargetUnit::ALU0, 1, false},
-        { {0x7c000710, 0xffffffff, {}, "fadd.", 0 }, RISCVInst::TargetUnit::FPU, 1, false},
-        { {0x7c700000, 0xffffffff, {}, "cmp", 0 }, RISCVInst::TargetUnit::ALU1, 1, false},
-        { {0x7c700010, 0xffffffff, {}, "cmn", 0 }, RISCVInst::TargetUnit::ALU1, 1, false},
-        { {0x7c500000, 0xffffffff, {}, "cmp", 0 }, RISCVInst::TargetUnit::ALU1, 1, false},
-        { {0x7c500000, 0xffffffff, {}, "cmp", 0 }, RISCVInst::TargetUnit::ALU1, 1, false},
-        { {0x7c400010, 0xffffffff, {}, "sub", 0 }, RISCVInst::TargetUnit::ALU1, 1, false},
-        { {0xfc800500, 0xffffffff, {}, "fabs",0 }, RISCVInst::TargetUnit::FPU, 5, false},
-        { {0xfc000700, 0xffffffff, {}, "fctid.", 0 }, RISCVInst::TargetUnit::FPU, 5, false},
-        { {0xfc200d00, 0xffffffff, {}, "fadd.", 0 }, RISCVInst::TargetUnit::FPU, 5, false},
-        { {0xfc800700, 0xffffffff, {}, "fadd.",0 }, RISCVInst::TargetUnit::FPU, 5, false},
-        { {0xfcb10300, 0xffffffff, {}, "fadd.", 0 }, RISCVInst::TargetUnit::FPU, 5, false},
-        { {0xfcb00ac0, 0xffffffff, {}, "fadd.", 0 }, RISCVInst::TargetUnit::FPU, 5, false},
-        { {0xfc000800, 0xffffffff, {}, "fadd.", 0 }, RISCVInst::TargetUnit::FPU, 5, false},
-        { {0xfc000d00, 0xffffffff, {}, "fadd.", 0 }, RISCVInst::TargetUnit::FPU, 5, false},
-        { {0xfc300a00, 0xffffffff, {}, "fadd.", 0 }, RISCVInst::TargetUnit::FPU, 5, false},
-        { {0xfc800400, 0xffffffff, {}, "fadd.", 0 }, RISCVInst::TargetUnit::FPU, 10, false},
-        { {0xfc800000, 0xffffffff, {}, "fadd.",  0 }, RISCVInst::TargetUnit::FPU, 1, false},
-        { {0xfc800100, 0xffffffff, {}, "fadd.",  0 }, RISCVInst::TargetUnit::FPU, 1, false},
-        { {0xfc000110, 0xffffffff, {}, "fdiv",   0 }, RISCVInst::TargetUnit::FPU, 20, false},
-        { {0xfc800030, 0xffffffff, {}, "fdiv.",   0 }, RISCVInst::TargetUnit::FPU, 30, false},
-        { {0xfc100000, 0xffffffff, {}, "sync",  0 }, RISCVInst::TargetUnit::ROB, 1, false},
-        { {0x7ea00010, 0xffffffff, {}, "lwx", 0 }, RISCVInst::TargetUnit::LSU, 10, false},
-        { {0xfca00030, 0xffffffff, {}, "stw", 0 }, RISCVInst::TargetUnit::LSU, 10, true}
+        { {0x7c01f214, 0xffffffff, {}, "add.", 0 }, Inst::TargetUnit::ALU0, 1, false},
+        { {0x7c6f0f10, 0xffffffff, {}, "cntlzw", 0 }, Inst::TargetUnit::ALU1, 1, false},
+        { {0x7c800000, 0xffffffff, {}, "add", 0 }, Inst::TargetUnit::ALU0, 1, false},
+        { {0x7c700000, 0xffffffff, {}, "subf.", 0 }, Inst::TargetUnit::ALU1, 1, false},
+        { {0x7c000000, 0xffffffff, {}, "and", 0 }, Inst::TargetUnit::ALU0, 1, false},
+        { {0x7c000000, 0xffffffff, {}, "and", 0 }, Inst::TargetUnit::ALU0, 1, false},
+        { {0x7c000710, 0xffffffff, {}, "fadd.", 0 }, Inst::TargetUnit::FPU, 1, false},
+        { {0x7c700000, 0xffffffff, {}, "cmp", 0 }, Inst::TargetUnit::ALU1, 1, false},
+        { {0x7c700010, 0xffffffff, {}, "cmn", 0 }, Inst::TargetUnit::ALU1, 1, false},
+        { {0x7c500000, 0xffffffff, {}, "cmp", 0 }, Inst::TargetUnit::ALU1, 1, false},
+        { {0x7c500000, 0xffffffff, {}, "cmp", 0 }, Inst::TargetUnit::ALU1, 1, false},
+        { {0x7c400010, 0xffffffff, {}, "sub", 0 }, Inst::TargetUnit::ALU1, 1, false},
+        { {0xfc800500, 0xffffffff, {}, "fabs",0 }, Inst::TargetUnit::FPU, 5, false},
+        { {0xfc000700, 0xffffffff, {}, "fctid.", 0 }, Inst::TargetUnit::FPU, 5, false},
+        { {0xfc200d00, 0xffffffff, {}, "fadd.", 0 }, Inst::TargetUnit::FPU, 5, false},
+        { {0xfc800700, 0xffffffff, {}, "fadd.",0 }, Inst::TargetUnit::FPU, 5, false},
+        { {0xfcb10300, 0xffffffff, {}, "fadd.", 0 }, Inst::TargetUnit::FPU, 5, false},
+        { {0xfcb00ac0, 0xffffffff, {}, "fadd.", 0 }, Inst::TargetUnit::FPU, 5, false},
+        { {0xfc000800, 0xffffffff, {}, "fadd.", 0 }, Inst::TargetUnit::FPU, 5, false},
+        { {0xfc000d00, 0xffffffff, {}, "fadd.", 0 }, Inst::TargetUnit::FPU, 5, false},
+        { {0xfc300a00, 0xffffffff, {}, "fadd.", 0 }, Inst::TargetUnit::FPU, 5, false},
+        { {0xfc800400, 0xffffffff, {}, "fadd.", 0 }, Inst::TargetUnit::FPU, 10, false},
+        { {0xfc800000, 0xffffffff, {}, "fadd.",  0 }, Inst::TargetUnit::FPU, 1, false},
+        { {0xfc800100, 0xffffffff, {}, "fadd.",  0 }, Inst::TargetUnit::FPU, 1, false},
+        { {0xfc000110, 0xffffffff, {}, "fdiv",   0 }, Inst::TargetUnit::FPU, 20, false},
+        { {0xfc800030, 0xffffffff, {}, "fdiv.",   0 }, Inst::TargetUnit::FPU, 30, false},
+        { {0xfc100000, 0xffffffff, {}, "sync",  0 }, Inst::TargetUnit::ROB, 1, false},
+        { {0x7ea00010, 0xffffffff, {}, "lwx", 0 }, Inst::TargetUnit::LSU, 10, false},
+        { {0xfca00030, 0xffffffff, {}, "stw", 0 }, Inst::TargetUnit::LSU, 10, true}
     };
 
     // Fetch a random instruction or MaxIPC
@@ -59,19 +59,19 @@ namespace olympia_core
 
         InstGroup insts_to_send;
         for(uint32_t i = 0; i < upper; ++i) {
-            RISCVInstPtr ex_inst;
+            InstPtr ex_inst;
             if(MaxIPC) {
                 ex_inst =
-                    sparta::allocate_sparta_shared_pointer<RISCVInst>(example_inst_allocator,
+                    sparta::allocate_sparta_shared_pointer<Inst>(example_inst_allocator,
                                                                         dummy_opcodes[i], getClock());
                 // This can be done instead, but you will lose about
                 // ~20% performance in an experiment running 5M
                 // instructions
-                //ex_inst.reset(new RISCVInst(dummy_opcodes[i], getClock()));
+                //ex_inst.reset(new Inst(dummy_opcodes[i], getClock()));
             }
             else {
                 ex_inst =
-                    sparta::allocate_sparta_shared_pointer<RISCVInst>(example_inst_allocator,
+                    sparta::allocate_sparta_shared_pointer<Inst>(example_inst_allocator,
                                                                         dummy_opcodes[rand() % dummy_opcodes.size()], getClock());
             }
             ex_inst->setUniqueID(++next_inst_id_);
@@ -82,7 +82,7 @@ namespace olympia_core
             if(SPARTA_EXPECT_FALSE(info_logger_)) {
                 info_logger_ << "RANDOM: Sending: " << ex_inst << " down the pipe";
             }
-            speculative_path_ = (ex_inst->getUnit() == RISCVInst::TargetUnit::ROB);
+            speculative_path_ = (ex_inst->getUnit() == Inst::TargetUnit::ROB);
 
             vaddr_ += 4;
         }

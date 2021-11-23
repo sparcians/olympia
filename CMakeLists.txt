@@ -16,6 +16,7 @@ if (CCACHE_PROGRAM)
   message ("-- Using ccache")
 endif ()
 
+set (SIM_BASE ${PROJECT_SOURCE_DIR})
 add_executable(olympia
   core/Core.cpp
   core/Fetch.cpp
@@ -23,7 +24,7 @@ add_executable(olympia
   core/Rename.cpp
   core/Dispatch.cpp
   core/Execute.cpp
-  core/RISCVInst.cpp
+  core/Inst.cpp
   core/ROB.cpp
   core/LSU.cpp
   core/Preloader.cpp

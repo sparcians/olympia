@@ -109,10 +109,10 @@ namespace olympia_core
             auto & ex_inst = *ex_inst_ptr;
             sparta_assert(ex_inst.isSpeculative() == false,
                         "Uh, oh!  A speculative instruction is being retired: " << ex_inst);
-            if(ex_inst.getStatus() == RISCVInst::Status::COMPLETED)
+            if(ex_inst.getStatus() == Inst::Status::COMPLETED)
             {
                 // UPDATE:
-                ex_inst.setStatus(RISCVInst::Status::RETIRED);
+                ex_inst.setStatus(Inst::Status::RETIRED);
                 if (ex_inst.isStoreInst()) {
                     out_rob_retire_ack_.send(ex_inst_ptr);
                 }
@@ -136,7 +136,7 @@ namespace olympia_core
                 }
 
                 // This is rare for the example
-                if(SPARTA_EXPECT_FALSE(ex_inst.getUnit() == RISCVInst::TargetUnit::ROB))
+                if(SPARTA_EXPECT_FALSE(ex_inst.getUnit() == Inst::TargetUnit::ROB))
                 {
                     if(SPARTA_EXPECT_FALSE(info_logger_)) {
                         info_logger_ << "Instigating flush... " << ex_inst;

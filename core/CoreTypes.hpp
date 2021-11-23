@@ -5,13 +5,13 @@
 #include <vector>
 
 #include "sparta/resources/Queue.hpp"
-#include "RISCVInst.hpp"
+#include "Inst.hpp"
 
 namespace olympia_core
 {
 
     //! Instruction Queue
-    typedef sparta::Queue<RISCVInstPtr> InstQueue;
+    typedef sparta::Queue<InstPtr> InstQueue;
 
     //! \typedef InstGroup
     //! \brief Typedef to define the instruction group

@@ -83,7 +83,7 @@ namespace olympia_core
         sparta::DataOutPort<uint64_t> out_fetch_flush_redirect_  {&unit_port_set_, "out_fetch_flush_redirect"};
 
         // UPDATE:
-        sparta::DataOutPort<RISCVInstPtr> out_rob_retire_ack_ {&unit_port_set_, "out_rob_retire_ack"};
+        sparta::DataOutPort<InstPtr> out_rob_retire_ack_ {&unit_port_set_, "out_rob_retire_ack"};
 
         // For flush
         sparta::DataInPort<FlushManager::FlushingCriteria> in_reorder_flush_

@@ -68,7 +68,7 @@ namespace olympia_core
             debug_logger_ << getContainer()->getLocation()
                           << ": "
                           << example_inst_allocator.getNumAllocated()
-                          << " RISCVInst objects allocated/created"
+                          << " Inst objects allocated/created"
                           << std::endl;
         }
 

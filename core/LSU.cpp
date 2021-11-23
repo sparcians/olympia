@@ -36,13 +36,13 @@ namespace olympia_core
 
         // Port config
         in_lsu_insts_.registerConsumerHandler
-                (CREATE_SPARTA_HANDLER_WITH_DATA(LSU, getInstsFromDispatch_, RISCVInstPtr));
+                (CREATE_SPARTA_HANDLER_WITH_DATA(LSU, getInstsFromDispatch_, InstPtr));
 
         in_biu_ack_.registerConsumerHandler
-                (CREATE_SPARTA_HANDLER_WITH_DATA(LSU, getAckFromBIU_, RISCVInstPtr));
+                (CREATE_SPARTA_HANDLER_WITH_DATA(LSU, getAckFromBIU_, InstPtr));
 
         in_rob_retire_ack_.registerConsumerHandler
-                (CREATE_SPARTA_HANDLER_WITH_DATA(LSU, getAckFromROB_, RISCVInstPtr));
+                (CREATE_SPARTA_HANDLER_WITH_DATA(LSU, getAckFromROB_, InstPtr));
 
         in_reorder_flush_.registerConsumerHandler
                 (CREATE_SPARTA_HANDLER_WITH_DATA(LSU, handleFlush_, FlushManager::FlushingCriteria));
@@ -98,7 +98,7 @@ namespace olympia_core
     }
 
     // Receive new load/store instruction from Dispatch Unit
-    void LSU::getInstsFromDispatch_(const RISCVInstPtr & inst_ptr)
+    void LSU::getInstsFromDispatch_(const InstPtr & inst_ptr)
     {
         // Create load/store memory access info
         MemoryAccessInfoPtr mem_info_ptr = sparta::allocate_sparta_shared_pointer<MemoryAccessInfo>(memory_access_allocator,
@@ -123,7 +123,7 @@ namespace olympia_core
 
 
         // Update instruction status
-        inst_ptr->setStatus(RISCVInst::Status::SCHEDULED);
+        inst_ptr->setStatus(Inst::Status::SCHEDULED);
 
         // NOTE:
         // It is a bug if instruction status is updated as SCHEDULED in the issueInst_()
@@ -138,7 +138,7 @@ namespace olympia_core
     }
 
     // Receive MSS access acknowledge from Bus Interface Unit
-    void LSU::getAckFromBIU_(const RISCVInstPtr & inst_ptr)
+    void LSU::getAckFromBIU_(const InstPtr & inst_ptr)
     {
         if (inst_ptr == mmu_pending_inst_ptr_) {
             rehandleMMULookupReq_(inst_ptr);
@@ -152,9 +152,9 @@ namespace olympia_core
     }
 
     // Receive update from ROB whenever store instructions retire
-    void LSU::getAckFromROB_(const RISCVInstPtr & inst_ptr)
+    void LSU::getAckFromROB_(const InstPtr & inst_ptr)
     {
-        sparta_assert(inst_ptr->getStatus() == RISCVInst::Status::RETIRED,
+        sparta_assert(inst_ptr->getStatus() == Inst::Status::RETIRED,
                         "Get ROB Ack, but the store inst hasn't retired yet!");
 
         updateIssuePriorityAfterStoreInstRetire_(inst_ptr);
@@ -309,14 +309,14 @@ namespace olympia_core
 
 
         const MemoryAccessInfoPtr & mem_access_info_ptr = ldst_pipeline_[stage_id];
-        const RISCVInstPtr & inst_ptr = mem_access_info_ptr->getInstPtr();
+        const InstPtr & inst_ptr = mem_access_info_ptr->getInstPtr();
 
         const bool phyAddrIsReady =
             mem_access_info_ptr->getPhyAddrStatus();
         const bool isAlreadyHIT =
             (mem_access_info_ptr->getCacheState() == MemoryAccessInfo::CacheState::HIT);
         const bool isUnretiredStore =
-            inst_ptr->isStoreInst() && (inst_ptr->getStatus() != RISCVInst::Status::RETIRED);
+            inst_ptr->isStoreInst() && (inst_ptr->getStatus() != Inst::Status::RETIRED);
         const bool cacheBypass = isAlreadyHIT || !phyAddrIsReady || isUnretiredStore;
 
         if (cacheBypass) {
@@ -428,7 +428,7 @@ namespace olympia_core
 
 
         const MemoryAccessInfoPtr & mem_access_info_ptr = ldst_pipeline_[stage_id];
-        const RISCVInstPtr & inst_ptr = mem_access_info_ptr->getInstPtr();
+        const InstPtr & inst_ptr = mem_access_info_ptr->getInstPtr();
         bool isStoreInst = inst_ptr->isStoreInst();
 
         // Complete load instruction
@@ -437,7 +437,7 @@ namespace olympia_core
                         "Load instruction cannot complete when cache is still a miss!");
 
             // Update instruction status
-            inst_ptr->setStatus(RISCVInst::Status::COMPLETED);
+            inst_ptr->setStatus(Inst::Status::COMPLETED);
 
             // Remove completed instruction from issue queue
             popIssueQueue_(inst_ptr);
@@ -457,13 +457,13 @@ namespace olympia_core
 
 
         // Complete store instruction
-        if (inst_ptr->getStatus() != RISCVInst::Status::RETIRED) {
+        if (inst_ptr->getStatus() != Inst::Status::RETIRED) {
 
             sparta_assert(mem_access_info_ptr->getMMUState() == MemoryAccessInfo::MMUState::HIT,
                         "Store instruction cannot complete when TLB is still a miss!");
 
             // Update instruction status
-            inst_ptr->setStatus(RISCVInst::Status::COMPLETED);
+            inst_ptr->setStatus(Inst::Status::COMPLETED);
 
 
             if (SPARTA_EXPECT_FALSE(info_logger_.observed())) {
@@ -558,7 +558,7 @@ namespace olympia_core
     }
 
     // Pop completed load/store instruction out of issue queue
-    void LSU::popIssueQueue_(const RISCVInstPtr & inst_ptr)
+    void LSU::popIssueQueue_(const InstPtr & inst_ptr)
     {
         // Look for the instruction to be completed, and remove it from issue queue
         for (auto iter = ldst_inst_queue_.begin(); iter != ldst_inst_queue_.end(); iter++) {
@@ -634,7 +634,7 @@ namespace olympia_core
     // Access MMU/TLB
     bool LSU::MMULookup_(const MemoryAccessInfoPtr & mem_access_info_ptr)
     {
-        const RISCVInstPtr & inst_ptr = mem_access_info_ptr->getInstPtr();
+        const InstPtr & inst_ptr = mem_access_info_ptr->getInstPtr();
         uint64_t vaddr = inst_ptr->getVAdr();
 
         bool tlb_hit = false;
@@ -669,7 +669,7 @@ namespace olympia_core
     }
 
     // Re-handle outstanding MMU access request
-    void LSU::rehandleMMULookupReq_(const RISCVInstPtr & inst_ptr)
+    void LSU::rehandleMMULookupReq_(const InstPtr & inst_ptr)
     {
         // MMU is no longer busy any more
         mmu_busy_ = false;
@@ -732,7 +732,7 @@ namespace olympia_core
     // Access Cache
     bool LSU::cacheLookup_(const MemoryAccessInfoPtr & mem_access_info_ptr)
     {
-        const RISCVInstPtr & inst_ptr = mem_access_info_ptr->getInstPtr();
+        const InstPtr & inst_ptr = mem_access_info_ptr->getInstPtr();
         uint64_t phyAddr = inst_ptr->getRAdr();
 
         bool cache_hit = false;
@@ -767,7 +767,7 @@ namespace olympia_core
     }
 
     // Re-handle outstanding cache access request
-    void LSU::rehandleCacheLookupReq_(const RISCVInstPtr & inst_ptr)
+    void LSU::rehandleCacheLookupReq_(const InstPtr & inst_ptr)
     {
         // Cache is no longer busy any more
         cache_busy_ = false;
@@ -828,7 +828,7 @@ namespace olympia_core
     }
 
     // Update issue priority when newly dispatched instruction comes in
-    void LSU::updateIssuePriorityAfterNewDispatch_(const RISCVInstPtr & inst_ptr)
+    void LSU::updateIssuePriorityAfterNewDispatch_(const InstPtr & inst_ptr)
     {
         for (auto &inst_info_ptr : ldst_inst_queue_) {
             if (inst_info_ptr->getInstPtr() == inst_ptr) {
@@ -845,7 +845,7 @@ namespace olympia_core
     }
 
     // Update issue priority after cache reload
-    void LSU::updateIssuePriorityAfterTLBReload_(const RISCVInstPtr & inst_ptr,
+    void LSU::updateIssuePriorityAfterTLBReload_(const InstPtr & inst_ptr,
                                                  const bool is_flushed_inst)
     {
         bool is_found = false;
@@ -882,7 +882,7 @@ namespace olympia_core
     }
 
     // Update issue priority after cache reload
-    void LSU::updateIssuePriorityAfterCacheReload_(const RISCVInstPtr & inst_ptr,
+    void LSU::updateIssuePriorityAfterCacheReload_(const InstPtr & inst_ptr,
                                                    const bool is_flushed_inst)
     {
         bool is_found = false;
@@ -919,7 +919,7 @@ namespace olympia_core
     }
 
     // Update issue priority after store instruction retires
-    void LSU::updateIssuePriorityAfterStoreInstRetire_(const RISCVInstPtr & inst_ptr)
+    void LSU::updateIssuePriorityAfterStoreInstRetire_(const InstPtr & inst_ptr)
     {
         for (auto &inst_info_ptr : ldst_inst_queue_) {
             if (inst_info_ptr->getInstPtr() == inst_ptr) {

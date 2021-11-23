@@ -1,4 +1,4 @@
-// <RISCVInst.h> -*- C++ -*-
+// <Inst.h> -*- C++ -*-
 
 
 #pragma once
@@ -18,18 +18,18 @@
 namespace olympia_core
 {
     /*!
-    * \class RISCVInst
+    * \class Inst
     * \brief Example instruction that flows through the example/CoreModel
     */
 
     // Forward declaration of the Pair Definition class is must as we are friending it.
-    class RISCVInstPairDef;
+    class InstPairDef;
 
-    class RISCVInst {
+    class Inst {
     public:
 
         // The modeler needs to alias a type called "SpartaPairDefinitionType" to the Pair Definition class  of itself
-        using SpartaPairDefinitionType = RISCVInstPairDef;
+        using SpartaPairDefinitionType = InstPairDef;
 
         enum class Status : std::uint16_t{
             FETCHED = 0,
@@ -61,7 +61,7 @@ namespace olympia_core
 
         using InstStatus = sparta::SharedData<Status>;
 
-        RISCVInst(const sparta::decode::DecoderBase & static_inst,
+        Inst(const sparta::decode::DecoderBase & static_inst,
                     TargetUnit unit,
                     uint32_t execute_time,
                     bool isStore,
@@ -74,10 +74,10 @@ namespace olympia_core
             status_("inst_status", clk, state),
             status_state_(state) {}
 
-        RISCVInst(const StaticInfo & info,
+        Inst(const StaticInfo & info,
                     const sparta::Clock * clk,
                     Status state = Status::FETCHED) :
-            RISCVInst(info.decode_base,
+            Inst(info.decode_base,
                         info.unit,
                         info.execute_time,
                         info.is_store_inst,
@@ -94,13 +94,13 @@ namespace olympia_core
         }
 
         bool getCompletedStatus() const {
-            return getStatus() == olympia_core::RISCVInst::Status::COMPLETED;
+            return getStatus() == olympia_core::Inst::Status::COMPLETED;
         }
 
         void setStatus(Status status) {
             status_state_.setValue(status);
             status_.write(status);
-            if(getStatus() == olympia_core::RISCVInst::Status::COMPLETED) {
+            if(getStatus() == olympia_core::Inst::Status::COMPLETED) {
                 if(ev_retire_ != 0) {
                     ev_retire_->schedule();
                 }
@@ -115,7 +115,7 @@ namespace olympia_core
             ev_retire_ = rob_retire_event;
             is_last_ = last;
 
-            if(status_.isValidNS() && status_.readNS() == olympia_core::RISCVInst::Status::COMPLETED) {
+            if(status_.isValidNS() && status_.readNS() == olympia_core::Inst::Status::COMPLETED) {
                 ev_retire_->schedule();
             }
         }
@@ -161,92 +161,92 @@ namespace olympia_core
         sparta::State<Status> status_state_;
     };
 
-    extern sparta::SpartaSharedPointerAllocator<RISCVInst> example_inst_allocator;
+    extern sparta::SpartaSharedPointerAllocator<Inst> example_inst_allocator;
 
-    inline std::ostream & operator<<(std::ostream & os, const RISCVInst & inst) {
+    inline std::ostream & operator<<(std::ostream & os, const Inst & inst) {
         os << inst.getMnemonic();
         return os;
     }
 
-    typedef sparta::SpartaSharedPointer<RISCVInst> RISCVInstPtr;
-    inline std::ostream & operator<<(std::ostream & os, const RISCVInstPtr & inst) {
+    typedef sparta::SpartaSharedPointer<Inst> InstPtr;
+    inline std::ostream & operator<<(std::ostream & os, const InstPtr & inst) {
         os << *inst;
         return os;
     }
 
-    inline std::ostream & operator<<(std::ostream & os, const RISCVInst::TargetUnit & unit) {
+    inline std::ostream & operator<<(std::ostream & os, const Inst::TargetUnit & unit) {
         switch(unit) {
-            case RISCVInst::TargetUnit::ALU0:
+            case Inst::TargetUnit::ALU0:
                 os << "ALU0";
                 break;
-            case RISCVInst::TargetUnit::ALU1:
+            case Inst::TargetUnit::ALU1:
                 os << "ALU1";
                 break;
-            case RISCVInst::TargetUnit::FPU:
+            case Inst::TargetUnit::FPU:
                 os << "FPU";
                 break;
-            case RISCVInst::TargetUnit::BR:
+            case Inst::TargetUnit::BR:
                 os << "BR";
                 break;
-            case RISCVInst::TargetUnit::LSU:
+            case Inst::TargetUnit::LSU:
                 os << "LSU";
                 break;
-            case RISCVInst::TargetUnit::ROB:
+            case Inst::TargetUnit::ROB:
                 os << "ROB";
                 break;
-            case RISCVInst::TargetUnit::N_TARGET_UNITS:
+            case Inst::TargetUnit::N_TARGET_UNITS:
                 throw sparta::SpartaException("N_TARGET_UNITS cannot be a valid enum state.");
         }
         return os;
     }
 
-    inline std::ostream & operator<<(std::ostream & os, const RISCVInst::Status & status) {
+    inline std::ostream & operator<<(std::ostream & os, const Inst::Status & status) {
         switch(status) {
-            case RISCVInst::Status::FETCHED:
+            case Inst::Status::FETCHED:
                 os << "FETCHED";
                 break;
-            case RISCVInst::Status::DECODED:
+            case Inst::Status::DECODED:
                 os << "DECODED";
                 break;
-            case RISCVInst::Status::RENAMED:
+            case Inst::Status::RENAMED:
                 os << "RENAMED";
                 break;
-            case RISCVInst::Status::SCHEDULED:
+            case Inst::Status::SCHEDULED:
                 os << "SCHEDULED";
                 break;
-            case RISCVInst::Status::COMPLETED:
+            case Inst::Status::COMPLETED:
                 os << "COMPLETED";
                 break;
-            case RISCVInst::Status::RETIRED:
+            case Inst::Status::RETIRED:
                 os << "RETIRED";
                 break;
-            case RISCVInst::Status::__LAST:
+            case Inst::Status::__LAST:
                 throw sparta::SpartaException("__LAST cannot be a valid enum state.");
         }
         return os;
     }
 
     /*!
-    * \class RISCVInstPairDef
+    * \class InstPairDef
     * \brief Pair Definition class of the Example instruction that flows through the example/CoreModel
     */
-    // This is the definition of the PairDefinition class of RISCVInst.
+    // This is the definition of the PairDefinition class of Inst.
     // This PairDefinition class could be named anything but it needs to
-    // inherit publicly from sparta::PairDefinition templatized on the actual class RISCVInst.
-    class RISCVInstPairDef : public sparta::PairDefinition<RISCVInst>{
+    // inherit publicly from sparta::PairDefinition templatized on the actual class Inst.
+    class InstPairDef : public sparta::PairDefinition<Inst>{
     public:
 
         // The SPARTA_ADDPAIRs APIs must be called during the construction of the PairDefinition class
-        RISCVInstPairDef() : PairDefinition<RISCVInst>(){
-            SPARTA_INVOKE_PAIRS(RISCVInst);
+        InstPairDef() : PairDefinition<Inst>(){
+            SPARTA_INVOKE_PAIRS(Inst);
         }
-        SPARTA_REGISTER_PAIRS(SPARTA_ADDPAIR("DID",      &RISCVInst::getUniqueID),
-                              SPARTA_ADDPAIR("uid",      &RISCVInst::getUniqueID),
-                              SPARTA_ADDPAIR("mnemonic", &RISCVInst::getMnemonic),
-                              SPARTA_ADDPAIR("complete", &RISCVInst::getCompletedStatus),
-                              SPARTA_ADDPAIR("unit",     &RISCVInst::getUnit),
-                              SPARTA_ADDPAIR("latency",  &RISCVInst::getExecuteTime),
-                              SPARTA_ADDPAIR("raddr",    &RISCVInst::getRAdr, std::ios::hex),
-                              SPARTA_ADDPAIR("vaddr",    &RISCVInst::getVAdr, std::ios::hex));
+        SPARTA_REGISTER_PAIRS(SPARTA_ADDPAIR("DID",      &Inst::getUniqueID),
+                              SPARTA_ADDPAIR("uid",      &Inst::getUniqueID),
+                              SPARTA_ADDPAIR("mnemonic", &Inst::getMnemonic),
+                              SPARTA_ADDPAIR("complete", &Inst::getCompletedStatus),
+                              SPARTA_ADDPAIR("unit",     &Inst::getUnit),
+                              SPARTA_ADDPAIR("latency",  &Inst::getExecuteTime),
+                              SPARTA_ADDPAIR("raddr",    &Inst::getRAdr, std::ios::hex),
+                              SPARTA_ADDPAIR("vaddr",    &Inst::getVAdr, std::ios::hex));
     };
 }

@@ -160,7 +160,7 @@ namespace olympia_core
         }};
 
         std::array<sparta::Counter,
-                   static_cast<uint32_t>(RISCVInst::TargetUnit::N_TARGET_UNITS)>
+                   static_cast<uint32_t>(Inst::TargetUnit::N_TARGET_UNITS)>
         unit_distribution_ {{
             sparta::Counter(getStatisticSet(), "count_alu0_insts",
                           "Total ALU0 insts", sparta::Counter::COUNT_NORMAL),
@@ -183,7 +183,7 @@ namespace olympia_core
         {getStatisticSet(),
                 "count_insts_per_unit",
                 "Unit distributions",
-                static_cast<uint32_t>(RISCVInst::TargetUnit::N_TARGET_UNITS),
+                static_cast<uint32_t>(Inst::TargetUnit::N_TARGET_UNITS),
                 "dispatch_inst_count",
                 sparta::Counter::COUNT_NORMAL,
                 sparta::InstrumentationNode::VIS_NORMAL};
@@ -197,7 +197,7 @@ namespace olympia_core
             getStatisticSet(),
             "weighted_count_insts_per_unit",
             "Weighted unit distributions",
-            static_cast<uint32_t>(RISCVInst::TargetUnit::N_TARGET_UNITS),
+            static_cast<uint32_t>(Inst::TargetUnit::N_TARGET_UNITS),
             sparta::CounterBase::COUNT_NORMAL,
             sparta::InstrumentationNode::VIS_NORMAL
         };

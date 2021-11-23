@@ -131,7 +131,7 @@ namespace olympia_core
 
             MemoryAccessInfo() = delete;
 
-            MemoryAccessInfo(const RISCVInstPtr & inst_ptr) :
+            MemoryAccessInfo(const InstPtr & inst_ptr) :
                 ldst_inst_ptr_(inst_ptr),
                 phyAddrIsReady_(false),
                 mmu_access_state_(MMUState::NO_ACCESS),
@@ -141,13 +141,13 @@ namespace olympia_core
 
             virtual ~MemoryAccessInfo() {}
 
-            // This RISCVInst pointer will act as our portal to the RISCVInst class
-            // and we will use this pointer to query values from functions of RISCVInst class
-            const RISCVInstPtr & getInstPtr() const { return ldst_inst_ptr_; }
+            // This Inst pointer will act as our portal to the Inst class
+            // and we will use this pointer to query values from functions of Inst class
+            const InstPtr & getInstPtr() const { return ldst_inst_ptr_; }
 
             // This is a function which will be added in the SPARTA_ADDPAIRs API.
             uint64_t getInstUniqueID() const {
-                const RISCVInstPtr &inst_ptr = getInstPtr();
+                const InstPtr &inst_ptr = getInstPtr();
 
                 return inst_ptr == nullptr ? 0 : inst_ptr->getUniqueID();
             }
@@ -178,7 +178,7 @@ namespace olympia_core
 
         private:
             // load/store instruction pointer
-            RISCVInstPtr ldst_inst_ptr_;
+            InstPtr ldst_inst_ptr_;
 
             // Indicate MMU address translation status
             bool phyAddrIsReady_;
@@ -254,9 +254,9 @@ namespace olympia_core
                 rank_(IssuePriority::LOWEST),
                 state_(IssueState::NOT_READY) {}
 
-            // This RISCVInst pointer will act as one of the two portals to the RISCVInst class
-            // and we will use this pointer to query values from functions of RISCVInst class
-            const RISCVInstPtr & getInstPtr() const {
+            // This Inst pointer will act as one of the two portals to the Inst class
+            // and we will use this pointer to query values from functions of Inst class
+            const InstPtr & getInstPtr() const {
                 return mem_access_info_ptr_->getInstPtr();
             }
 
@@ -342,10 +342,10 @@ namespace olympia_core
         sparta::DataInPort<InstQueue::value_type> in_lsu_insts_
             {&unit_port_set_, "in_lsu_insts", 1};
 
-        sparta::DataInPort<RISCVInstPtr> in_biu_ack_
+        sparta::DataInPort<InstPtr> in_biu_ack_
             {&unit_port_set_, "in_biu_ack", 1};
 
-        sparta::DataInPort<RISCVInstPtr> in_rob_retire_ack_
+        sparta::DataInPort<InstPtr> in_rob_retire_ack_
             {&unit_port_set_, "in_rob_retire_ack", 1};
 
         sparta::DataInPort<FlushCriteria> in_reorder_flush_
@@ -358,7 +358,7 @@ namespace olympia_core
         sparta::DataOutPort<uint32_t> out_lsu_credits_
             {&unit_port_set_, "out_lsu_credits"};
 
-        sparta::DataOutPort<RISCVInstPtr> out_biu_req_
+        sparta::DataOutPort<InstPtr> out_biu_req_
             {&unit_port_set_, "out_biu_req"};
 
 
@@ -377,7 +377,7 @@ namespace olympia_core
         bool mmu_busy_ = false;
         bool mmu_pending_inst_flushed = false;
         // Keep track of the instruction that causes current outstanding TLB miss
-        RISCVInstPtr mmu_pending_inst_ptr_ = nullptr;
+        InstPtr mmu_pending_inst_ptr_ = nullptr;
 
         // NOTE:
         // Depending on how many outstanding TLB misses the MMU could handle at the same time
@@ -391,7 +391,7 @@ namespace olympia_core
         bool cache_busy_ = false;
         bool cache_pending_inst_flushed_ = false;
         // Keep track of the instruction that causes current outstanding cache miss
-        RISCVInstPtr cache_pending_inst_ptr_ = nullptr;
+        InstPtr cache_pending_inst_ptr_ = nullptr;
 
         sparta::collection::Collectable<bool> cache_busy_collectable_{
             getContainer(), "dcache_busy", &cache_busy_};
@@ -438,13 +438,13 @@ namespace olympia_core
         void sendInitialCredits_();
 
         // Receive new load/store Instruction from Dispatch Unit
-        void getInstsFromDispatch_(const RISCVInstPtr &);
+        void getInstsFromDispatch_(const InstPtr &);
 
         // Receive MSS access acknowledge from Bus Interface Unit
-        void getAckFromBIU_(const RISCVInstPtr &);
+        void getAckFromBIU_(const InstPtr &);
 
         // Receive update from ROB whenever store instructions retire
-        void getAckFromROB_(const RISCVInstPtr &);
+        void getAckFromROB_(const InstPtr &);
 
         // Issue/Re-issue ready instructions in the issue queue
         void issueInst_();
@@ -476,7 +476,7 @@ namespace olympia_core
         void appendIssueQueue_(const LoadStoreInstInfoPtr &);
 
         // Pop completed load/store instruction out of issue queue
-        void popIssueQueue_(const RISCVInstPtr &);
+        void popIssueQueue_(const InstPtr &);
 
         // Arbitrate instruction issue from ldst_inst_queue
         const LoadStoreInstInfoPtr & arbitrateInstIssue_();
@@ -488,7 +488,7 @@ namespace olympia_core
         bool MMULookup_(const MemoryAccessInfoPtr &);
 
         // Re-handle outstanding MMU access request
-        void rehandleMMULookupReq_(const RISCVInstPtr &);
+        void rehandleMMULookupReq_(const InstPtr &);
 
         // Reload TLB entry
         void reloadTLB_(uint64_t);
@@ -497,24 +497,24 @@ namespace olympia_core
         bool cacheLookup_(const MemoryAccessInfoPtr &);
 
         // Re-handle outstanding cache access request
-        void rehandleCacheLookupReq_(const RISCVInstPtr &);
+        void rehandleCacheLookupReq_(const InstPtr &);
 
         // Reload cache line
         void reloadCache_(uint64_t);
 
         // Update issue priority after dispatch
-        void updateIssuePriorityAfterNewDispatch_(const RISCVInstPtr &);
+        void updateIssuePriorityAfterNewDispatch_(const InstPtr &);
 
         // Update issue priority after TLB reload
-        void updateIssuePriorityAfterTLBReload_(const RISCVInstPtr &,
+        void updateIssuePriorityAfterTLBReload_(const InstPtr &,
                                                 const bool = false);
 
         // Update issue priority after cache reload
-        void updateIssuePriorityAfterCacheReload_(const RISCVInstPtr &,
+        void updateIssuePriorityAfterCacheReload_(const InstPtr &,
                                                   const bool = false);
 
         // Update issue priority after store instruction retires
-        void updateIssuePriorityAfterStoreInstRetire_(const RISCVInstPtr &);
+        void updateIssuePriorityAfterStoreInstRetire_(const InstPtr &);
 
         // Flush instruction issue queue
         template<typename Comp>

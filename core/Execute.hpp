@@ -72,7 +72,7 @@ namespace olympia_core
             {&unit_port_set_, "in_reorder_flush", sparta::SchedulingPhase::Flush, 1};
 
         // Ready queue
-        typedef std::list<RISCVInstPtr> ReadyQueue;
+        typedef std::list<InstPtr> ReadyQueue;
         ReadyQueue  ready_queue_;
 
         // busy signal for the attached alu
@@ -82,19 +82,19 @@ namespace olympia_core
         const uint32_t execute_time_;
         const uint32_t scheduler_size_;
         const bool in_order_issue_;
-        sparta::collection::IterableCollector<std::list<RISCVInstPtr>>
+        sparta::collection::IterableCollector<std::list<InstPtr>>
         ready_queue_collector_ {getContainer(), "scheduler_queue",
                 &ready_queue_, scheduler_size_};
 
         // Events used to issue and complete the instruction
         sparta::UniqueEvent<> issue_inst_{&unit_event_set_, getName() + "_issue_inst",
                 CREATE_SPARTA_HANDLER(Execute, issueInst_)};
-        sparta::PayloadEvent<RISCVInstPtr> complete_inst_{
+        sparta::PayloadEvent<InstPtr> complete_inst_{
             &unit_event_set_, getName() + "_complete_inst",
-                CREATE_SPARTA_HANDLER_WITH_DATA(Execute, completeInst_, RISCVInstPtr)};
+                CREATE_SPARTA_HANDLER_WITH_DATA(Execute, completeInst_, InstPtr)};
 
         // A pipeline collector
-        sparta::collection::Collectable<RISCVInstPtr> collected_inst_;
+        sparta::collection::Collectable<InstPtr> collected_inst_;
 
         // Counter
         sparta::Counter total_insts_issued_{
@@ -110,10 +110,10 @@ namespace olympia_core
         ////////////////////////////////////////////////////////////////////////////////
         // Callbacks
         void issueInst_();
-        void getInstsFromDispatch_(const RISCVInstPtr&);
+        void getInstsFromDispatch_(const InstPtr&);
 
         // Used to complete the inst in the FPU
-        void completeInst_(const RISCVInstPtr&);
+        void completeInst_(const InstPtr&);
 
         // Used to flush the ALU
         void flushInst_(const FlushManager::FlushingCriteria & criteria);
