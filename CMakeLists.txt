@@ -25,6 +25,7 @@ add_executable(olympia
   core/Dispatch.cpp
   core/Execute.cpp
   core/Inst.cpp
+  core/InstGroup.cpp
   core/ROB.cpp
   core/LSU.cpp
   core/Preloader.cpp

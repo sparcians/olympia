@@ -28,7 +28,7 @@ namespace olympia_core
         // - Instructions are received on the Uop Queue Append port
         // - Credits arrive on the dispatch queue credits port
         in_uop_queue_append_.
-            registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(Rename, decodedInstructions_, InstGroup));
+            registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(Rename, decodedInstructions_, InstGroupPtr));
         in_dispatch_queue_credits_.
             registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(Rename, creditsDispatchQueue_, uint32_t));
         in_reorder_flush_.
@@ -62,11 +62,11 @@ namespace olympia_core
         uop_queue_.clear();
     }
 
-    void Rename::decodedInstructions_(const InstGroup & insts)
+    void Rename::decodedInstructions_(const InstGroupPtr & insts)
     {
         sparta_assert(in_uop_queue_append_.dataReceived());
 
-        for(auto & i : insts) {
+        for(auto & i : *insts) {
             uop_queue_.push(i);
         }
 
@@ -86,9 +86,9 @@ namespace olympia_core
         if(num_rename > 0)
         {
 
-            InstGroup insts;
+            InstGroupPtr insts = sparta::allocate_sparta_shared_pointer<InstGroup>(instgroup_allocator);
             for(uint32_t i = 0; i < num_rename; ++i) {
-                insts.emplace_back(uop_queue_.read(0));
+                insts->emplace_back(uop_queue_.read(0));
                 if(SPARTA_EXPECT_FALSE(info_logger_)) {
                     info_logger_ << ": sending inst to dispatch: " << uop_queue_.read(0);
                 }

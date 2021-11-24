@@ -26,7 +26,8 @@ namespace olympia_core
 
         // Register consuming events with the InPorts.
         in_dispatch_queue_write_.
-            registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(Dispatch, dispatchQueueAppended_, InstGroup));
+            registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(Dispatch, dispatchQueueAppended_,
+                                                                    InstGroupPtr));
 
         in_fpu_credits_.
             registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(Dispatch, fpuCredits_, uint32_t));
@@ -126,8 +127,8 @@ namespace olympia_core
         }
     }
 
-    void Dispatch::dispatchQueueAppended_(const InstGroup &) {
-        for(auto & i : in_dispatch_queue_write_.pullData()) {
+    void Dispatch::dispatchQueueAppended_(const InstGroupPtr &) {
+        for(auto & i : *in_dispatch_queue_write_.pullData()) {
             dispatch_queue_.push(i);
         }
 
@@ -171,7 +172,8 @@ namespace olympia_core
 
         current_stall_ = NOT_STALLED;
 
-        InstGroup insts_dispatched;
+        InstGroupPtr insts_dispatched =
+            sparta::allocate_sparta_shared_pointer<InstGroup>(instgroup_allocator);;
         bool keep_dispatching = true;
         for(uint32_t i = 0; (i < num_dispatch) && keep_dispatching; ++i)
         {
@@ -304,7 +306,7 @@ namespace olympia_core
             }
 
             if(dispatched) {
-                insts_dispatched.emplace_back(ex_inst_ptr);
+                insts_dispatched->emplace_back(ex_inst_ptr);
                 dispatch_queue_.pop();
                 --credits_rob_;
             } else {
@@ -320,8 +322,8 @@ namespace olympia_core
             }
         }
 
-        if(!insts_dispatched.empty()) {
-            out_dispatch_queue_credits_.send(insts_dispatched.size());
+        if(!insts_dispatched->empty()) {
+            out_dispatch_queue_credits_.send(insts_dispatched->size());
             out_reorder_write_.send(insts_dispatched);
         }
 

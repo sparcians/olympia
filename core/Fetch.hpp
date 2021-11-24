@@ -17,6 +17,7 @@
 #include "sparta/simulation/ParameterSet.hpp"
 
 #include "CoreTypes.hpp"
+#include "InstGroup.hpp"
 
 namespace olympia_core
 {
@@ -67,7 +68,7 @@ namespace olympia_core
         ~Fetch() {
             debug_logger_ << getContainer()->getLocation()
                           << ": "
-                          << example_inst_allocator.getNumAllocated()
+                          << inst_allocator.getNumAllocated()
                           << " Inst objects allocated/created"
                           << std::endl;
         }
@@ -78,7 +79,7 @@ namespace olympia_core
     private:
 
         // Internal DataOutPort to the decode unit's fetch queue
-        sparta::DataOutPort<InstGroup> out_fetch_queue_write_ {&unit_port_set_, "out_fetch_queue_write"};
+        sparta::DataOutPort<InstGroupPtr> out_fetch_queue_write_ {&unit_port_set_, "out_fetch_queue_write"};
 
         // Internal DataInPort from decode's fetch queue for credits
         sparta::DataInPort<uint32_t> in_fetch_queue_credits_

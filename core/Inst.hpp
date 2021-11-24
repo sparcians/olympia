@@ -161,14 +161,14 @@ namespace olympia_core
         sparta::State<Status> status_state_;
     };
 
-    extern sparta::SpartaSharedPointerAllocator<Inst> example_inst_allocator;
+    extern sparta::SpartaSharedPointerAllocator<Inst> inst_allocator;
 
     inline std::ostream & operator<<(std::ostream & os, const Inst & inst) {
         os << inst.getMnemonic();
         return os;
     }
 
-    typedef sparta::SpartaSharedPointer<Inst> InstPtr;
+    using InstPtr = sparta::SpartaSharedPointer<Inst>;
     inline std::ostream & operator<<(std::ostream & os, const InstPtr & inst) {
         os << *inst;
         return os;

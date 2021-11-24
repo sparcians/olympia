@@ -57,13 +57,14 @@ namespace olympia_core
         // Nothing to send.  Don't need to schedule this again.
         if(upper == 0) { return; }
 
-        InstGroup insts_to_send;
-        for(uint32_t i = 0; i < upper; ++i) {
+        InstGroupPtr insts_to_send = sparta::allocate_sparta_shared_pointer<InstGroup>(instgroup_allocator);
+        for(uint32_t i = 0; i < upper; ++i)
+        {
             InstPtr ex_inst;
-            if(MaxIPC) {
+            if constexpr (MaxIPC) {
                 ex_inst =
-                    sparta::allocate_sparta_shared_pointer<Inst>(example_inst_allocator,
-                                                                        dummy_opcodes[i], getClock());
+                    sparta::allocate_sparta_shared_pointer<Inst>(inst_allocator,
+                                                                 dummy_opcodes[i], getClock());
                 // This can be done instead, but you will lose about
                 // ~20% performance in an experiment running 5M
                 // instructions
@@ -71,22 +72,21 @@ namespace olympia_core
             }
             else {
                 ex_inst =
-                    sparta::allocate_sparta_shared_pointer<Inst>(example_inst_allocator,
-                                                                        dummy_opcodes[rand() % dummy_opcodes.size()], getClock());
+                    sparta::allocate_sparta_shared_pointer<Inst>(inst_allocator,
+                                                                 dummy_opcodes[rand() % dummy_opcodes.size()], getClock());
             }
             ex_inst->setUniqueID(++next_inst_id_);
             ex_inst->setVAdr(vaddr_);
             ex_inst->setSpeculative(speculative_path_);
-            insts_to_send.emplace_back(ex_inst);
+            insts_to_send->emplace_back(ex_inst);
 
             if(SPARTA_EXPECT_FALSE(info_logger_)) {
-                info_logger_ << "RANDOM: Sending: " << ex_inst << " down the pipe";
+                info_logger_ << "Sending: " << ex_inst << " down the pipe";
             }
             speculative_path_ = (ex_inst->getUnit() == Inst::TargetUnit::ROB);
 
             vaddr_ += 4;
         }
-
 
         out_fetch_queue_write_.send(insts_to_send);
 
@@ -96,7 +96,7 @@ namespace olympia_core
         }
 
         if(SPARTA_EXPECT_FALSE(info_logger_)) {
-            info_logger_ << "Fetch: send num_inst=" << insts_to_send.size()
+            info_logger_ << "Fetch: send num_inst=" << insts_to_send->size()
                          << " instructions, remaining credit=" << credits_inst_queue_;
         }
     }

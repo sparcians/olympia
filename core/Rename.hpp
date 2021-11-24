@@ -12,6 +12,7 @@
 #include "sparta/simulation/ParameterSet.hpp"
 #include "CoreTypes.hpp"
 #include "FlushManager.hpp"
+#include "InstGroup.hpp"
 
 namespace olympia_core
 {
@@ -53,12 +54,12 @@ namespace olympia_core
         static const char name[];
 
     private:
-        InstQueue                     uop_queue_;
-        sparta::DataInPort<InstGroup>   in_uop_queue_append_       {&unit_port_set_, "in_uop_queue_append", 1};
-        sparta::DataOutPort<uint32_t>   out_uop_queue_credits_     {&unit_port_set_, "out_uop_queue_credits"};
-        sparta::DataOutPort<InstGroup>  out_dispatch_queue_write_  {&unit_port_set_, "out_dispatch_queue_write"};
-        sparta::DataInPort<uint32_t>    in_dispatch_queue_credits_ {&unit_port_set_, "in_dispatch_queue_credits",
-                                                                    sparta::SchedulingPhase::Tick, 0};
+        InstQueue                         uop_queue_;
+        sparta::DataInPort<InstGroupPtr>  in_uop_queue_append_       {&unit_port_set_, "in_uop_queue_append", 1};
+        sparta::DataOutPort<uint32_t>     out_uop_queue_credits_     {&unit_port_set_, "out_uop_queue_credits"};
+        sparta::DataOutPort<InstGroupPtr> out_dispatch_queue_write_  {&unit_port_set_, "out_dispatch_queue_write"};
+        sparta::DataInPort<uint32_t>      in_dispatch_queue_credits_ {&unit_port_set_, "in_dispatch_queue_credits",
+                                                                      sparta::SchedulingPhase::Tick, 0};
 
         // For flush
         sparta::DataInPort<FlushManager::FlushingCriteria> in_reorder_flush_
@@ -77,7 +78,7 @@ namespace olympia_core
         void creditsDispatchQueue_(const uint32_t &);
 
         //! Process new instructions coming in from decode
-        void decodedInstructions_(const InstGroup &);
+        void decodedInstructions_(const InstGroupPtr &);
 
         //! Rename instructions
         void renameInstructions_();

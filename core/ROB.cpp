@@ -82,7 +82,7 @@ namespace olympia_core
     // getting a reference, you can pull the data from the port
     // directly, albeit inefficient and superfluous here...
     void ROB::robAppended_(const InstGroup &) {
-        for(auto & i : in_reorder_buffer_write_.pullData()) {
+        for(auto & i : *in_reorder_buffer_write_.pullData()) {
             reorder_buffer_.push(i);
         }
 

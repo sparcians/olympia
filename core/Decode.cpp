@@ -19,7 +19,7 @@ namespace olympia_core
         fetch_queue_.enableCollection(node);
 
         fetch_queue_write_in_.
-            registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(Decode, fetchBufferAppended_, InstGroup));
+            registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(Decode, fetchBufferAppended_, InstGroupPtr));
         uop_queue_credits_in_.
             registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(Decode, receiveUopQueueCredits_, uint32_t));
         in_reorder_flush_.
@@ -49,10 +49,10 @@ namespace olympia_core
     // Called when the fetch buffer was appended by Fetch.  If decode
     // has the credits, then schedule a decode session.  Otherwise, go
     // to sleep
-    void Decode::fetchBufferAppended_(const InstGroup & insts)
+    void Decode::fetchBufferAppended_(const InstGroupPtr & insts)
     {
         // Cache the instructions in the instruction queue if we can't decode this cycle
-        for(auto & i : insts)
+        for(auto & i : *insts)
         {
             fetch_queue_.push(i);
 
@@ -83,10 +83,11 @@ namespace olympia_core
 
         if(num_decode > 0)
         {
-            InstGroup insts;
+            InstGroupPtr insts =
+                sparta::allocate_sparta_shared_pointer<InstGroup>(instgroup_allocator);
             // Send instructions on their way to rename
             for(uint32_t i = 0; i < num_decode; ++i) {
-                insts.emplace_back(fetch_queue_.read(0));
+                insts->emplace_back(fetch_queue_.read(0));
 
                 if(SPARTA_EXPECT_FALSE(info_logger_)) {
                     info_logger_ << "Decoded inst: " << fetch_queue_.read(0);

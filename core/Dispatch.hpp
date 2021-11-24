@@ -19,6 +19,7 @@
 #include "test/ContextCounter/WeightedContextCounter.hpp"
 
 #include "CoreTypes.hpp"
+#include "InstGroup.hpp"
 #include "FlushManager.hpp"
 
 namespace olympia_core
@@ -69,14 +70,14 @@ namespace olympia_core
         InstQueue dispatch_queue_;
 
         // Ports
-        sparta::DataInPort<InstGroup>              in_dispatch_queue_write_   {&unit_port_set_, "in_dispatch_queue_write", 1};
+        sparta::DataInPort<InstGroupPtr>           in_dispatch_queue_write_   {&unit_port_set_, "in_dispatch_queue_write", 1};
         sparta::DataOutPort<uint32_t>              out_dispatch_queue_credits_{&unit_port_set_, "out_dispatch_queue_credits"};
         sparta::DataOutPort<InstQueue::value_type> out_fpu_write_             {&unit_port_set_, "out_fpu_write"};
         sparta::DataOutPort<InstQueue::value_type> out_alu0_write_            {&unit_port_set_, "out_alu0_write", false}; // Do not assume zero-cycle delay
         sparta::DataOutPort<InstQueue::value_type> out_alu1_write_            {&unit_port_set_, "out_alu1_write", false}; // Do not assume zero-cycle delay
         sparta::DataOutPort<InstQueue::value_type> out_br_write_              {&unit_port_set_, "out_br_write", false}; // Do not assume zero-cycle delay
         sparta::DataOutPort<InstQueue::value_type> out_lsu_write_             {&unit_port_set_, "out_lsu_write", false};
-        sparta::DataOutPort<InstGroup>             out_reorder_write_         {&unit_port_set_, "out_reorder_buffer_write"};
+        sparta::DataOutPort<InstGroupPtr>          out_reorder_write_         {&unit_port_set_, "out_reorder_buffer_write"};
 
         sparta::DataInPort<uint32_t> in_fpu_credits_ {&unit_port_set_, "in_fpu_credits",  sparta::SchedulingPhase::Tick, 0};
         sparta::DataInPort<uint32_t> in_alu0_credits_ {&unit_port_set_, "in_alu0_credits",  sparta::SchedulingPhase::Tick, 0};
@@ -112,7 +113,7 @@ namespace olympia_core
         void robCredits_(const uint32_t&);
 
         // Dispatch instructions
-        void dispatchQueueAppended_(const InstGroup &);
+        void dispatchQueueAppended_(const InstGroupPtr &);
         void dispatchInstructions_();
 
         // Flush notifications

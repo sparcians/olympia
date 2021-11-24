@@ -18,11 +18,11 @@ namespace olympia_core
     {
         in_execute_inst_.
             registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(Execute, getInstsFromDispatch_,
-                                                                  InstPtr));
+                                                                    InstPtr));
 
         in_reorder_flush_.
             registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(Execute, flushInst_,
-                                                                  FlushManager::FlushingCriteria));
+                                                                    FlushManager::FlushingCriteria));
         // Startup handler for sending initiatl credits
         sparta::StartupEvent(node, CREATE_SPARTA_HANDLER(Execute, sendInitialCredits_));
         // Set up the precedence between issue and complete

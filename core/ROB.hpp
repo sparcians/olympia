@@ -16,6 +16,7 @@
 #include "sparta/statistics/StatisticInstance.hpp"
 
 #include "CoreTypes.hpp"
+#include "InstGroup.hpp"
 #include "FlushManager.hpp"
 
 namespace olympia_core
@@ -86,7 +87,7 @@ namespace olympia_core
         InstQueue      reorder_buffer_;
 
         // Ports used by the ROB
-        sparta::DataInPort<InstGroup> in_reorder_buffer_write_   {&unit_port_set_, "in_reorder_buffer_write", 1};
+        sparta::DataInPort<InstGroupPtr> in_reorder_buffer_write_{&unit_port_set_, "in_reorder_buffer_write", 1};
         sparta::DataOutPort<uint32_t> out_reorder_buffer_credits_{&unit_port_set_, "out_reorder_buffer_credits"};
         sparta::DataInPort<bool>      in_oldest_completed_       {&unit_port_set_, "in_reorder_oldest_completed"};
         sparta::DataOutPort<FlushManager::FlushingCriteria> out_retire_flush_ {&unit_port_set_, "out_retire_flush"};

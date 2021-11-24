@@ -12,6 +12,7 @@
 #include "sparta/simulation/ParameterSet.hpp"
 #include "CoreTypes.hpp"
 #include "FlushManager.hpp"
+#include "InstGroup.hpp"
 
 namespace olympia_core
 {
@@ -57,12 +58,12 @@ namespace olympia_core
         InstQueue fetch_queue_;
 
         // Port listening to the fetch queue appends - Note the 1 cycle delay
-        sparta::DataInPort<InstGroup> fetch_queue_write_in_     {&unit_port_set_, "in_fetch_queue_write", 1};
-        sparta::DataOutPort<uint32_t> fetch_queue_credits_outp_ {&unit_port_set_, "out_fetch_queue_credits"};
+        sparta::DataInPort<InstGroupPtr> fetch_queue_write_in_     {&unit_port_set_, "in_fetch_queue_write", 1};
+        sparta::DataOutPort<uint32_t>    fetch_queue_credits_outp_ {&unit_port_set_, "out_fetch_queue_credits"};
 
         // Port to the uop queue in dispatch (output and credits)
-        sparta::DataOutPort<InstGroup> uop_queue_outp_      {&unit_port_set_, "out_uop_queue_write"};
-        sparta::DataInPort<uint32_t>   uop_queue_credits_in_{&unit_port_set_, "in_uop_queue_credits", sparta::SchedulingPhase::Tick, 0};
+        sparta::DataOutPort<InstGroupPtr> uop_queue_outp_      {&unit_port_set_, "out_uop_queue_write"};
+        sparta::DataInPort<uint32_t>      uop_queue_credits_in_{&unit_port_set_, "in_uop_queue_credits", sparta::SchedulingPhase::Tick, 0};
 
         // For flush
         sparta::DataInPort<FlushManager::FlushingCriteria> in_reorder_flush_
@@ -74,7 +75,7 @@ namespace olympia_core
         //////////////////////////////////////////////////////////////////////
         // Decoder callbacks
         void sendInitialCredits_();
-        void fetchBufferAppended_   (const InstGroup &);
+        void fetchBufferAppended_   (const InstGroupPtr &);
         void receiveUopQueueCredits_(const uint32_t &);
         void decodeInsts_();
         void handleFlush_(const FlushManager::FlushingCriteria & criteria);
