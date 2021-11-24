@@ -11,6 +11,10 @@
 #include "sparta/simulation/TreeNode.hpp"
 #include "sparta/log/MessageSource.hpp"
 
+#include "sparta/statistics/Counter.hpp"
+#include "sparta/statistics/StatisticDef.hpp"
+#include "sparta/statistics/StatisticInstance.hpp"
+
 #include "CoreTypes.hpp"
 #include "FlushManager.hpp"
 
@@ -40,7 +44,9 @@ namespace olympia_core
             PARAMETER(uint32_t, num_insts_to_retire, 0,
                       "Number of instructions to retire after which simulation will be "
                       "terminated. 0 means simulation will run until end of testcase")
-
+            PARAMETER(uint64_t, retire_heartbeat, 1000000, "Heartbeat printout threshold")
+            PARAMETER(sparta::Clock::Cycle, retire_timeout_interval, 10000,
+                      "Retire timeout error threshold (in cycles). Amount of time elapsed when nothing was retired")
         };
 
         /**
@@ -64,14 +70,18 @@ namespace olympia_core
 
     private:
 
-        sparta::StatisticDef stat_ipc_;
-        sparta::Counter      num_retired_;
-        sparta::Counter      num_flushes_;
-        sparta::Clock::Cycle last_retirement_ = 0;
-        const sparta::Clock::Cycle retire_timeout_interval_ = 100000;
+        // Stats and counters
+        sparta::StatisticDef       stat_ipc_;            // A simple expression to calculate IPC
+        sparta::Counter            num_retired_;         // Running counter of number instructions retired
+        sparta::Counter            num_flushes_;         // Number of flushes
+        sparta::StatisticInstance  overall_ipc_si_;      // An overall IPC statistic instance starting at time == 0
+        sparta::StatisticInstance  period_ipc_si_;       // An IPC counter for the period between retirement heartbeats
 
+        // Parameter constants
+        const sparta::Clock::Cycle retire_timeout_interval_;
         const uint32_t num_to_retire_;
         const uint32_t num_insts_to_retire_; // parameter from ilimit
+        const uint64_t retire_heartbeat_;    // Retire heartbeat interval
 
         InstQueue      reorder_buffer_;
 
@@ -95,6 +105,7 @@ namespace olympia_core
 
         // A nice checker to make sure forward progress is being made
         // Note that in the ROB constructor, this event is set as non-continuing
+        sparta::Clock::Cycle last_retirement_ = 0; // Last retirement cycle for checking stalled retire
         sparta::Event<> ev_ensure_forward_progress_{&unit_event_set_, "forward_progress_check",
                 CREATE_SPARTA_HANDLER(ROB, checkForwardProgress_)};
 
@@ -107,4 +118,3 @@ namespace olympia_core
 
     };
 }
-

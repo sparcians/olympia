@@ -25,8 +25,12 @@ namespace olympia_core
                      "total_number_of_flushes",
                      "The total number of flushes performed by the ROB",
                      sparta::Counter::COUNT_NORMAL),
+        overall_ipc_si_(&stat_ipc_),
+        period_ipc_si_(&stat_ipc_),
+        retire_timeout_interval_(p->retire_timeout_interval),
         num_to_retire_(p->num_to_retire),
         num_insts_to_retire_(p->num_insts_to_retire),
+        retire_heartbeat_(p->retire_heartbeat),
         reorder_buffer_("ReorderBuffer", p->retire_queue_depth,
                         node->getClock(), &unit_stat_set_)
     {
@@ -125,9 +129,13 @@ namespace olympia_core
                     info_logger_ << "Retiring " << ex_inst;
                 }
 
-                if(SPARTA_EXPECT_FALSE((num_retired_ % 1000000) == 0)) {
-                    std::cout << "Retired " << num_retired_
-                              << " instructions" << std::endl;
+                if(SPARTA_EXPECT_FALSE((num_retired_ % retire_heartbeat_) == 0)) {
+                    std::cout << "Retired " << num_retired_.get()
+                              << " instructions in " << getClock()->currentCycle()
+                              << " cycles.  Period IPC: " << period_ipc_si_.getValue()
+                              << " overall IPC: " << overall_ipc_si_.getValue()
+                              << std::endl;
+                    period_ipc_si_.start();
                 }
                 // Will be true if the user provides a -i option
                 if (SPARTA_EXPECT_FALSE((num_retired_ == num_insts_to_retire_))) {
